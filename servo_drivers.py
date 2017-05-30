@@ -36,7 +36,7 @@ def main():
 		if command == 's':
 			moveTilt(False)
 		if command == 'e':
-			launchBall()
+			launchBall(100)
 		if command == 'a':
 			turnCake(LEFT)
 		if command == 'd':
@@ -72,22 +72,22 @@ def turnCake(left):
 			currVal[TURN_SERVO] -= DELTA
 			pwm.set_pwm(TURN_SERVO, 0, currVal[TURN_SERVO])
 
-def increaseMotorSpeed(increase = True):
+def increaseMotorSpeed(increase = False, percent = 0):
 	if increase:
-		pwm.set_pwm(LEFT_MOTOR, 0, MAX_TICKS - 1)		
-		pwm.set_pwm(RIGHT_MOTOR, 0, MAX_TICKS - 1)
+		pwm.set_pwm(LEFT_MOTOR, 0, percent * (MAX_TICKS//100) - 1)		
+		pwm.set_pwm(RIGHT_MOTOR, 0, percent * (MAX_TICKS//100) - 1)
 	else:
 		pwm.set_pwm(LEFT_MOTOR, 0, 0)		
 		pwm.set_pwm(RIGHT_MOTOR, 0, 0)
 		
-def launchBall():
-	increaseMotorSpeed()
+def launchBall(percent):
+	increaseMotorSpeed(True, percent)
 	time.sleep(1.75)
 	pwm.set_pwm(LOAD_SERVO, 0, SERVO_MAX)
-	time.sleep(.35)
+	time.sleep(.3)
 	pwm.set_pwm(LOAD_SERVO, 0, SERVO_MID)
 	time.sleep(.25)
-	increaseMotorSpeed(False)
+	increaseMotorSpeed()
 	
 if __name__ == '__main__':
 	main()
