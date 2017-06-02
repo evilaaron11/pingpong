@@ -50,7 +50,6 @@ def setStartingWidth():
 	# Set servo frequency
 	pwm.set_pwm_freq(60)
 	for i in range(0,5):
-		print(i)
 		pwm.set_pwm(i, 0, SERVO_MID) 
 		currVal.append(SERVO_MID)		
                 if i == LEFT_MOTOR or i == RIGHT_MOTOR:

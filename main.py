@@ -12,6 +12,8 @@ PATH = os.getcwd()
 fLength = 939.55
 MID = 900
 DELTA = 75
+# Max distance supported -- Ping pong table is 9ft long
+MAX_DIST = 108
 distance = []
 
 def aimCake(coordinate, distance):
@@ -32,7 +34,7 @@ def aimCake(coordinate, distance):
 def calcPercentSpeed(distance):
     if distance > 100:
         return 100
-    return int(distance)
+    return int(1.2 * distance)
 
 def tiltAndLaunch(distance):
     temp = distance
@@ -48,7 +50,8 @@ def main():
     parser.add_argument('--calibrate', dest='calibrate', action='store_true', help='use to calibrate camera')
     parser.add_argument('--delay', type=float, help='delay between shots -- default is 0') 
     parser.add_argument('--debug', dest='debug', action='store_true', help='enable image output')
-    parser.set_defaults(numcycles=-1, calibrate=False, delay=0, debug=False)
+    parser.add_argument('--segonly', dest='segonly', action='store_true', help='Performs segmentation and image estimation only with out moving launcher')
+    parser.set_defaults(numcycles=-1, calibrate=False, delay=0, debug=False, segonly=False)
     args = parser.parse_args()
 
     while args.numcycles > 0 or (args.numcycles <= -1 and args.calibrate == False):
@@ -74,13 +77,25 @@ def main():
             newx, newy = image.shape[1] / 4, image.shape[0] / 4
             newimage = cv2.resize(image, (int(newx), int(newy)))
             cv2.imshow("Image", newimage)
-            cv2.waitKey(50)
-            #cv2.waitKey(0)
+            if args.segonly:
+                cv2.waitKey(0)
+            else:
+                cv2.waitKey(50)
 
     # Start shooting them randomly
+        if len(centers) <= 0:
+            print("No centers found.")
+            print("Exiting")
+            return
+
         temp = randint(0, len(centers) - 1)
-        aimCake(centers[temp], distance[temp])
-        tiltAndLaunch(distance[temp])
+        while distance[temp] > MAX_DIST:
+            temp = randint(0, len(centers) - 1)
+
+        if args.segonly == False:
+            aimCake(centers[temp], distance[temp])
+            tiltAndLaunch(distance[temp])
+        
         time.sleep(args.delay)
         args.numcycles -= 1
 
