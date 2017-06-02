@@ -12,6 +12,8 @@ SERVO_MID = (SERVO_MIN + SERVO_MAX) // 2
 DELTA = 10
 LEFT = True
 RIGHT = False
+UP = True
+DOWN = False
 
 # Servos at different channels
 TURN_SERVO = 0
@@ -51,6 +53,8 @@ def setStartingWidth():
 		print(i)
 		pwm.set_pwm(i, 0, SERVO_MID) 
 		currVal.append(SERVO_MID)		
+                if i == LEFT_MOTOR or i == RIGHT_MOTOR:
+                    pwm.set_pwm(i, 0, 0)
 	
 def moveTilt(up):
 	if up == True:
@@ -84,7 +88,7 @@ def launchBall(percent):
 	increaseMotorSpeed(True, percent)
 	time.sleep(1.75)
 	pwm.set_pwm(LOAD_SERVO, 0, SERVO_MAX)
-	time.sleep(.3)
+	time.sleep(.32)
 	pwm.set_pwm(LOAD_SERVO, 0, SERVO_MID)
 	time.sleep(.25)
 	increaseMotorSpeed()

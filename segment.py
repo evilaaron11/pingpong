@@ -33,8 +33,8 @@ def segment_img(img):
     # upper mask (170-180)
     #lower_red = np.array([170, 50, 50])
     #upper_red = np.array([180, 255, 255])
-    lower_red = np.array([0, 170, 170])
-    upper_red = np.array([5, 255, 255])
+    lower_red = np.array([0, 150, 150])
+    upper_red = np.array([8, 255, 255])
     mask1 = cv2.inRange(transform, lower_red, upper_red)
     #mask = mask0 + mask1
 
@@ -55,7 +55,7 @@ def is_target(contour):
     convex = cv2.convexHull(contour)
     perimeter = cv2.arcLength(convex, closed=True)
     circularity = (4 * np.pi * area) / (perimeter ** 2) if perimeter > 0 else 0
-    return area > 50 and circularity > 0.1, perimeter
+    return area > 100 and circularity > 0.3, perimeter
 
 def identify_target(img):
     _, cnts, _ = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
